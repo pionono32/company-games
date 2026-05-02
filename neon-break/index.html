@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEON BREAK</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- HUD -->
+  <div id="hud">
+    <div class="hud-item">
+      <span class="hud-label">PUNTOS</span>
+      <span id="score-display">000000</span>
+    </div>
+    <div class="hud-item">
+      <span class="hud-label">MEJOR</span>
+      <span id="hs-display">000000</span>
+    </div>
+    <div class="hud-item">
+      <span class="hud-label">NIVEL</span>
+      <span id="level-display">1</span>
+    </div>
+    <div class="hud-item">
+      <span class="hud-label">VIDAS</span>
+      <span id="lives-display">♥♥♥</span>
+    </div>
+  </div>
+
+  <div id="powerup-label"></div>
+
+  <canvas id="gameCanvas"></canvas>
+
+  <!-- ── MENU ── -->
+  <div id="menu-screen" class="overlay active">
+    <div class="overlay-box">
+      <h1 class="title neon-cyan">NEON<br><span class="neon-pink">BREAK</span></h1>
+      <p class="subtitle">Destruye todos los bloques.<br>Recoge power-ups. ¡Alcanza el puntaje más alto!</p>
+      <div class="legend">
+        <div class="legend-item"><span class="dot" style="background:#00f5ff"></span> Normal (10 pts)</div>
+        <div class="legend-item"><span class="dot" style="background:#ffdd00"></span> Duro (30 pts)</div>
+        <div class="legend-item"><span class="dot" style="background:#ff4400"></span> Explosivo (50 pts)</div>
+        <div class="legend-item"><span class="dot" style="background:#888"></span> Irrompible</div>
+      </div>
+      <button id="btn-start" class="btn btn-primary">▶ JUGAR</button>
+      <p class="hint">Mover: Mouse | Pausa: P</p>
+    </div>
+  </div>
+
+  <!-- ── LEVEL CLEAR ── -->
+  <div id="level-clear-screen" class="overlay">
+    <div class="overlay-box">
+      <h2 class="neon-green">¡NIVEL SUPERADO!</h2>
+      <p class="big-text neon-yellow" id="level-clear-score"></p>
+      <p class="subtitle">Siguiente nivel: <span id="next-level-num" class="neon-cyan">2</span></p>
+      <button id="btn-next-level" class="btn btn-primary">CONTINUAR ▶</button>
+    </div>
+  </div>
+
+  <!-- ── GAME OVER ── -->
+  <div id="game-over-screen" class="overlay">
+    <div class="overlay-box">
+      <h2 class="neon-red">GAME OVER</h2>
+      <p class="subtitle">Puntaje final</p>
+      <p class="big-text neon-yellow" id="final-score"></p>
+      <button id="btn-restart-go" class="btn btn-danger">↺ REINTENTAR</button>
+    </div>
+  </div>
+
+  <!-- ── WIN ── -->
+  <div id="win-screen" class="overlay">
+    <div class="overlay-box">
+      <h2 class="neon-yellow">¡GANASTE! 🏆</h2>
+      <p class="subtitle">Puntaje total</p>
+      <p class="big-text neon-cyan" id="win-score"></p>
+      <button id="btn-restart-win" class="btn btn-primary">↺ JUGAR DE NUEVO</button>
+    </div>
+  </div>
+
+  <!-- ── PAUSE ── -->
+  <div id="pause-screen" class="overlay">
+    <div class="overlay-box">
+      <h2 class="neon-cyan">PAUSA</h2>
+      <button id="btn-resume" class="btn btn-primary">▶ CONTINUAR</button>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

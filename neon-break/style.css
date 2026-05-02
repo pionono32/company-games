@@ -1,0 +1,215 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #050510;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+  font-family: 'Orbitron', monospace;
+  color: #fff;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* ── HUD ── */
+#hud {
+  display: flex;
+  gap: 32px;
+  padding: 10px 24px;
+  background: rgba(0, 10, 30, 0.9);
+  border-bottom: 1px solid rgba(0, 245, 255, 0.2);
+  width: 100%;
+  justify-content: center;
+  z-index: 10;
+}
+
+.hud-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.hud-label {
+  font-size: 9px;
+  color: rgba(0, 245, 255, 0.5);
+  letter-spacing: 2px;
+}
+
+.hud-item span:last-child {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 0 10px #00f5ff, 0 0 20px #00f5ff44;
+  letter-spacing: 3px;
+}
+
+#lives-display {
+  color: #ff2244 !important;
+  text-shadow: 0 0 10px #ff2244 !important;
+}
+
+/* ── CANVAS ── */
+#gameCanvas {
+  display: block;
+  cursor: none;
+  max-width: 100%;
+  max-height: calc(100vh - 60px);
+  image-rendering: crisp-edges;
+}
+
+/* ── POWER-UP LABEL ── */
+#powerup-label {
+  position: fixed;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: 4px;
+  opacity: 0;
+  transition: opacity 0.4s;
+  text-shadow: 0 0 20px currentColor;
+  pointer-events: none;
+  z-index: 20;
+}
+
+/* ── OVERLAYS ── */
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 5, 16, 0.85);
+  backdrop-filter: blur(4px);
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+.overlay.active { display: flex; }
+
+.overlay-box {
+  background: rgba(5, 10, 30, 0.95);
+  border: 1px solid rgba(0, 245, 255, 0.3);
+  border-radius: 16px;
+  padding: 48px 56px;
+  text-align: center;
+  box-shadow:
+    0 0 40px rgba(0, 245, 255, 0.1),
+    inset 0 0 40px rgba(0, 245, 255, 0.03);
+  max-width: 480px;
+  width: 90%;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ── TITLE ── */
+.title {
+  font-size: 64px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 8px;
+  margin-bottom: 20px;
+}
+
+h2 {
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: 6px;
+  margin-bottom: 16px;
+}
+
+.subtitle {
+  color: rgba(255,255,255,0.6);
+  font-size: 12px;
+  letter-spacing: 1px;
+  line-height: 1.8;
+  margin-bottom: 24px;
+}
+
+.big-text {
+  font-size: 48px;
+  font-weight: 900;
+  letter-spacing: 4px;
+  margin-bottom: 28px;
+}
+
+/* ── LEGEND ── */
+.legend {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 16px;
+  margin-bottom: 28px;
+  text-align: left;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  color: rgba(255,255,255,0.65);
+  letter-spacing: 1px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px currentColor;
+}
+
+/* ── BUTTONS ── */
+.btn {
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 3px;
+  padding: 14px 36px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.2s;
+  display: block;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.btn:hover { transform: scale(1.03); }
+.btn:active { transform: scale(0.97); }
+
+.btn-primary {
+  background: linear-gradient(135deg, #0066cc, #00f5ff);
+  color: #fff;
+  box-shadow: 0 0 20px rgba(0,245,255,0.4);
+}
+.btn-primary:hover { box-shadow: 0 0 35px rgba(0,245,255,0.7); }
+
+.btn-danger {
+  background: linear-gradient(135deg, #cc0033, #ff2244);
+  color: #fff;
+  box-shadow: 0 0 20px rgba(255,34,68,0.4);
+}
+.btn-danger:hover { box-shadow: 0 0 35px rgba(255,34,68,0.7); }
+
+.hint {
+  font-size: 10px;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 2px;
+  margin-top: 8px;
+}
+
+/* ── NEON COLORS ── */
+.neon-cyan  { color: #00f5ff; text-shadow: 0 0 20px #00f5ff, 0 0 40px #00f5ff66; }
+.neon-pink  { color: #ff00aa; text-shadow: 0 0 20px #ff00aa, 0 0 40px #ff00aa66; }
+.neon-green { color: #00ff88; text-shadow: 0 0 20px #00ff88, 0 0 40px #00ff8866; }
+.neon-yellow{ color: #ffee00; text-shadow: 0 0 20px #ffee00, 0 0 40px #ffee0066; }
+.neon-red   { color: #ff2244; text-shadow: 0 0 20px #ff2244, 0 0 40px #ff224466; }

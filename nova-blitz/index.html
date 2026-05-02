@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NOVA BLITZ</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id="hud">
+    <div class="hud-item">
+      <span class="hud-label">PUNTOS</span>
+      <span id="score-display">000000</span>
+    </div>
+    <div class="hud-item">
+      <span class="hud-label">MEJOR</span>
+      <span id="hs-display">000000</span>
+    </div>
+    <div class="hud-item">
+      <span class="hud-label">OLA</span>
+      <span id="wave-display">1</span>
+    </div>
+    <div class="hud-item">
+      <span class="hud-label">VIDAS</span>
+      <span id="lives-display">♥♥♥</span>
+    </div>
+  </div>
+
+  <div id="boss-bar-wrap">
+    <span>JEFE</span>
+    <div id="boss-track"><div id="boss-fill"></div></div>
+  </div>
+
+  <div id="powerup-label"></div>
+  <div id="wave-announce"></div>
+
+  <canvas id="gameCanvas"></canvas>
+
+  <!-- MENU -->
+  <div id="menu-screen" class="overlay active">
+    <div class="overlay-box">
+      <h1 class="title"><span class="neon-cyan">NOVA</span><br><span class="neon-pink">BLITZ</span></h1>
+      <p class="subtitle">Defiende la galaxia de oleadas enemigas.<br>¡Recoge mejoras y destruye a los jefes!</p>
+      <div class="legend">
+        <div class="legend-row"><span style="color:#ff2244">◆</span><span>Dron — rápido, 1 HP</span></div>
+        <div class="legend-row"><span style="color:#ff6600">▼</span><span>Caza — dispara, 2 HP</span></div>
+        <div class="legend-row"><span style="color:#aa00ff">⬡</span><span>Pesado — 3 vías, 4 HP</span></div>
+        <div class="legend-row"><span style="color:#ff00aa">★</span><span>Jefe — cada 5 olas</span></div>
+      </div>
+      <div class="pwup-list">
+        <span style="color:#ffee00">⚡RAPID</span>
+        <span style="color:#ff6600">💥SPREAD</span>
+        <span style="color:#00f5ff">🛡ESCUDO</span>
+        <span style="color:#ff2244">❤VIDA</span>
+        <span style="color:#aa00ff">💣BOMBA</span>
+      </div>
+      <button id="btn-start" class="btn btn-primary">▶ JUGAR</button>
+      <p class="hint">Mover: Mouse | Pausa: P o ESC</p>
+    </div>
+  </div>
+
+  <!-- WAVE CLEAR -->
+  <div id="wave-clear-screen" class="overlay">
+    <div class="overlay-box small">
+      <h2 class="neon-green">¡OLA SUPERADA!</h2>
+      <p class="subtitle">Puntaje actual</p>
+      <p class="big-text neon-yellow" id="wave-score-display"></p>
+      <p class="subtitle">Siguiente: Ola <span id="next-wave-num" class="neon-cyan">2</span></p>
+      <button id="btn-next-wave" class="btn btn-primary">CONTINUAR ▶</button>
+    </div>
+  </div>
+
+  <!-- GAME OVER -->
+  <div id="game-over-screen" class="overlay">
+    <div class="overlay-box">
+      <h2 class="neon-red">GAME OVER</h2>
+      <p class="subtitle">Llegaste a la ola <span id="final-wave" class="neon-cyan">1</span></p>
+      <p class="big-text neon-yellow" id="final-score-display"></p>
+      <p id="new-record-msg" class="record-msg">¡NUEVO RÉCORD! 🏆</p>
+      <button id="btn-restart" class="btn btn-danger">↺ REINTENTAR</button>
+    </div>
+  </div>
+
+  <!-- PAUSE -->
+  <div id="pause-screen" class="overlay">
+    <div class="overlay-box small">
+      <h2 class="neon-cyan">PAUSA</h2>
+      <button id="btn-resume" class="btn btn-primary">▶ CONTINUAR</button>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
