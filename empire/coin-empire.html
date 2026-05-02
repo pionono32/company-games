@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coin Empire 🪙</title>
+<style>
+/* ============================================================
+   BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #0d0d1a;
+  --panel:     #16162a;
+  --panel2:    #1e1e38;
+  --gold:      #f0c040;
+  --gold-dark: #c89a20;
+  --blue:      #4a9eff;
+  --green:     #4caf50;
+  --red:       #e05555;
+  --text:      #dde1f0;
+  --muted:     #6a7090;
+  --border:    rgba(240,192,64,0.12);
+  --r:         12px;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+body { display: flex; flex-direction: column; }
+
+/* ============================================================
+   CABECERA: título + barra de nivel
+   ============================================================ */
+header {
+  flex-shrink: 0;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 20px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.game-title {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--gold);
+  letter-spacing: 1px;
+}
+
+.level-info { text-align: right; line-height: 1.3; }
+.level-name   { font-size: .9rem; font-weight: 700; color: var(--gold); }
+.level-number { font-size: .7rem; color: var(--muted); }
+
+.xp-bar-wrap {
+  height: 5px;
+  background: rgba(255,255,255,.07);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.xp-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+  border-radius: 3px;
+  transition: width .6s ease;
+  width: 0%;
+}
+
+/* ============================================================
+   LAYOUT PRINCIPAL: dos columnas
+   ============================================================ */
+.game-wrap {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ============================================================
+   PANEL IZQUIERDO — estadísticas + botón de clic
+   ============================================================ */
+.left-panel {
+  width: 340px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+  border-right: 1px solid var(--border);
+  position: relative;
+}
+
+/* Tarjeta de estadísticas */
+.stats-card {
+  width: 100%;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 18px;
+  text-align: center;
+}
+
+.money-amount {
+  font-size: 2.4rem;
+  font-weight: 900;
+  color: var(--gold);
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+.money-label {
+  margin-top: 3px;
+  font-size: .7rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+}
+
+.stats-row {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 14px;
+}
+
+.stat-item { display: flex; flex-direction: column; align-items: center; gap: 1px; }
+.stat-val   { font-size: .95rem; font-weight: 700; }
+.stat-lbl   { font-size: .65rem; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+.stat-val.c { color: var(--blue); }
+.stat-val.i { color: var(--green); }
+
+.total-earned-row {
+  margin-top: 10px;
+  font-size: .72rem;
+  color: var(--muted);
+}
+.total-earned-row span { color: var(--text); font-weight: 600; }
+
+/* Botón moneda */
+.coin-btn-wrap { position: relative; }
+
+#coinBtn {
+  width: 148px;
+  height: 148px;
+  border-radius: 50%;
+  border: none;
+  background: radial-gradient(circle at 35% 32%, #ffe566, #f0a800 55%, #7a5200);
+  box-shadow:
+    0 0 0 10px rgba(240,192,64,.08),
+    0 0 50px rgba(240,192,64,.25),
+    inset 0 3px 8px rgba(255,255,255,.45),
+    inset 0 -4px 10px rgba(0,0,0,.35);
+  cursor: pointer;
+  font-size: 3.8rem;
+  line-height: 1;
+  transition: transform .08s ease, box-shadow .08s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#coinBtn:hover {
+  box-shadow:
+    0 0 0 10px rgba(240,192,64,.15),
+    0 0 70px rgba(240,192,64,.35),
+    inset 0 3px 8px rgba(255,255,255,.45),
+    inset 0 -4px 10px rgba(0,0,0,.35);
+}
+
+#coinBtn.pressed {
+  transform: scale(.9);
+  box-shadow:
+    0 0 0 5px rgba(240,192,64,.06),
+    0 0 25px rgba(240,192,64,.15),
+    inset 0 2px 4px rgba(255,255,255,.25),
+    inset 0 -2px 5px rgba(0,0,0,.35);
+}
+
+/* Anillo de brillo pulsante cuando hay mejoras asequibles */
+@keyframes ringPulse {
+  0%, 100% { box-shadow: 0 0 0 10px rgba(240,192,64,.08), 0 0 50px rgba(240,192,64,.25), inset 0 3px 8px rgba(255,255,255,.45), inset 0 -4px 10px rgba(0,0,0,.35); }
+  50%       { box-shadow: 0 0 0 14px rgba(240,192,64,.22), 0 0 70px rgba(240,192,64,.4),  inset 0 3px 8px rgba(255,255,255,.45), inset 0 -4px 10px rgba(0,0,0,.35); }
+}
+#coinBtn.glow { animation: ringPulse 2s ease-in-out infinite; }
+
+.click-hint { font-size: .7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+
+.footer-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.total-clicks { font-size: .72rem; color: var(--muted); }
+.total-clicks span { color: var(--text); }
+
+.reset-btn {
+  background: none;
+  border: 1px solid rgba(224,85,85,.25);
+  color: var(--muted);
+  font-size: .68rem;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all .2s;
+}
+.reset-btn:hover { border-color: var(--red); color: var(--red); }
+
+/* Indicador de guardado */
+.save-tag {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: .65rem;
+  color: var(--muted);
+  opacity: 0;
+  transition: opacity .4s;
+  white-space: nowrap;
+}
+.save-tag.show { opacity: 1; }
+
+/* ============================================================
+   TEXTO FLOTANTE al hacer clic (position: fixed, sobre todo)
+   ============================================================ */
+.float-txt {
+  position: fixed;
+  pointer-events: none;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--gold);
+  text-shadow: 0 1px 4px rgba(0,0,0,.8);
+  z-index: 9999;
+  animation: floatUp .9s ease-out forwards;
+}
+
+@keyframes floatUp {
+  0%   { opacity: 1; transform: translateY(0)    scale(1); }
+  70%  { opacity: .9; transform: translateY(-55px) scale(1.1); }
+  100% { opacity: 0; transform: translateY(-75px) scale(.9); }
+}
+
+/* ============================================================
+   PANEL DERECHO — mejoras
+   ============================================================ */
+.right-panel {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.right-panel::-webkit-scrollbar { width: 5px; }
+.right-panel::-webkit-scrollbar-track { background: transparent; }
+.right-panel::-webkit-scrollbar-thumb { background: rgba(240,192,64,.15); border-radius: 3px; }
+
+.section-title {
+  font-size: .7rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 5px;
+  margin-top: 4px;
+}
+.section-title:first-child { margin-top: 0; }
+
+/* Tarjeta de mejora */
+.upg-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: background .12s, border-color .12s, transform .08s, opacity .2s;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Barra de color izquierda al ser asequible */
+.upg-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--gold);
+  border-radius: 2px 0 0 2px;
+  transform: scaleY(0);
+  transition: transform .2s;
+}
+
+.upg-card.can-buy {
+  border-color: rgba(240,192,64,.35);
+}
+.upg-card.can-buy::before { transform: scaleY(1); }
+
+.upg-card:hover.can-buy {
+  background: var(--panel2);
+  transform: translateX(3px);
+}
+
+.upg-card:active.can-buy { transform: translateX(1px) scale(.99); }
+
+.upg-card.locked {
+  opacity: .42;
+  cursor: not-allowed;
+}
+
+/* Flash al comprar */
+@keyframes buyFlash {
+  0%   { background: rgba(240,192,64,.25); }
+  100% { background: var(--panel); }
+}
+.upg-card.flash { animation: buyFlash .35s ease; }
+
+.upg-icon { font-size: 1.9rem; width: 42px; text-align: center; flex-shrink: 0; }
+
+.upg-info { flex: 1; min-width: 0; }
+
+.upg-name {
+  font-size: .9rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+
+.upg-lv {
+  font-size: .6rem;
+  background: rgba(240,192,64,.12);
+  color: var(--gold);
+  padding: 1px 6px;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+.upg-desc { font-size: .75rem; color: var(--muted); margin-top: 2px; }
+
+.upg-cost { text-align: right; flex-shrink: 0; }
+.cost-num { font-size: .9rem; font-weight: 700; color: var(--gold); }
+.cost-num.red { color: var(--red); }
+.cost-lbl { font-size: .6rem; color: var(--muted); text-transform: uppercase; }
+
+/* ============================================================
+   NOTIFICACIÓN DE NIVEL (toast)
+   ============================================================ */
+.level-toast {
+  position: fixed;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: linear-gradient(135deg, #1e1e38, #2a2a50);
+  border: 1px solid var(--gold);
+  border-radius: 10px;
+  padding: 10px 22px;
+  text-align: center;
+  opacity: 0;
+  transition: opacity .4s, transform .4s;
+  z-index: 9998;
+  pointer-events: none;
+}
+.level-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.level-toast-title { font-size: .65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+.level-toast-name  { font-size: 1.1rem; font-weight: 800; color: var(--gold); margin-top: 2px; }
+
+/* ============================================================
+   RESPONSIVE (móvil)
+   ============================================================ */
+@media (max-width: 620px) {
+  .game-wrap       { flex-direction: column; }
+  .left-panel      { width: 100%; border-right: none; border-bottom: 1px solid var(--border); padding: 14px; gap: 14px; }
+  .money-amount    { font-size: 1.9rem; }
+  #coinBtn         { width: 120px; height: 120px; font-size: 3rem; }
+  .right-panel     { padding: 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     CABECERA
+     ============================================================ -->
+<header>
+  <div class="header-row">
+    <div class="game-title">🪙 Coin Empire</div>
+    <div class="level-info">
+      <div class="level-name"  id="lvName">Novato</div>
+      <div class="level-number" id="lvNum">Nivel 1</div>
+    </div>
+  </div>
+  <div class="xp-bar-wrap">
+    <div class="xp-bar" id="xpBar"></div>
+  </div>
+</header>
+
+<!-- Notificación de subida de nivel -->
+<div class="level-toast" id="lvToast">
+  <div class="level-toast-title">¡Subiste de nivel!</div>
+  <div class="level-toast-name" id="lvToastName"></div>
+</div>
+
+<!-- ============================================================
+     CUERPO
+     ============================================================ -->
+<div class="game-wrap">
+
+  <!-- Panel izquierdo -->
+  <div class="left-panel">
+
+    <div class="stats-card">
+      <div class="money-amount" id="moneyDisp">0</div>
+      <div class="money-label">monedas</div>
+      <div class="stats-row">
+        <div class="stat-item">
+          <span class="stat-val c" id="clickDisp">+1</span>
+          <span class="stat-lbl">por clic</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-val i" id="incomeDisp">+0/s</span>
+          <span class="stat-lbl">por segundo</span>
+        </div>
+      </div>
+      <div class="total-earned-row">Total ganado: <span id="totalDisp">0</span></div>
+    </div>
+
+    <div class="coin-btn-wrap">
+      <button id="coinBtn" title="¡Haz clic!">🪙</button>
+    </div>
+
+    <div class="click-hint">Tap para ganar</div>
+
+    <div class="footer-row">
+      <div class="total-clicks">Clics: <span id="clicksDisp">0</span></div>
+      <button class="reset-btn" id="resetBtn">Reiniciar</button>
+    </div>
+
+    <div class="save-tag" id="saveTag">💾 Guardado</div>
+  </div>
+
+  <!-- Panel derecho -->
+  <div class="right-panel" id="upgradesPanel"></div>
+</div>
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+'use strict';
+
+/* ============================================================
+   CONFIGURACIÓN
+   ============================================================ */
+const CFG = {
+  saveKey:      'coinEmpire_v1',
+  saveInterval: 5000,   // ms entre autoguardados
+  tickMs:       100,    // ms entre ticks de ingreso pasivo
+  maxOfflineSec: 60,    // máximo de segundos de ingreso offline
+};
+
+// Umbrales de XP total para subir de nivel
+const LEVELS = [
+  { t: 0,         n: 'Novato'          },
+  { t: 120,       n: 'Aprendiz'        },
+  { t: 700,       n: 'Mercader'        },
+  { t: 4000,      n: 'Comerciante'     },
+  { t: 20000,     n: 'Empresario'      },
+  { t: 100000,    n: 'Magnate'         },
+  { t: 500000,    n: 'Millonario'      },
+  { t: 3000000,   n: 'Multimillonario' },
+  { t: 15000000,  n: 'Billonario'      },
+  { t: 80000000,  n: 'Emperador'       },
+];
+
+// Definición de mejoras
+// type: 'click' (aumenta monedas por clic) | 'income' (ingreso pasivo /seg)
+const UPGRADES = [
+  // ── Mejoras de clic ──────────────────────────────────────
+  { id:'f1', section:'click', icon:'👆', name:'Dedo Ágil',    desc:'+1 moneda por clic',    baseCost:10,      mult:1.50, type:'click',  val:1    },
+  { id:'f2', section:'click', icon:'✨', name:'Dedo Dorado',  desc:'+5 monedas por clic',   baseCost:200,     mult:1.62, type:'click',  val:5    },
+  { id:'f3', section:'click', icon:'⚡', name:'Súper Clic',   desc:'+25 monedas por clic',  baseCost:4000,    mult:1.75, type:'click',  val:25   },
+  { id:'f4', section:'click', icon:'💥', name:'Mega Clic',    desc:'+100 monedas por clic', baseCost:60000,   mult:1.90, type:'click',  val:100  },
+  // ── Mejoras de ingreso pasivo ─────────────────────────────
+  { id:'w1', section:'income', icon:'👷', name:'Trabajador',  desc:'+1 moneda/seg',         baseCost:50,      mult:1.55, type:'income', val:1    },
+  { id:'w2', section:'income', icon:'🏪', name:'Tienda',      desc:'+5 monedas/seg',        baseCost:300,     mult:1.65, type:'income', val:5    },
+  { id:'w3', section:'income', icon:'⛏️', name:'Mina de Oro', desc:'+20 monedas/seg',       baseCost:2000,    mult:1.75, type:'income', val:20   },
+  { id:'w4', section:'income', icon:'🏭', name:'Fábrica',     desc:'+100 monedas/seg',      baseCost:15000,   mult:1.85, type:'income', val:100  },
+  { id:'w5', section:'income', icon:'🏦', name:'Banco',       desc:'+500 monedas/seg',      baseCost:100000,  mult:1.95, type:'income', val:500  },
+  { id:'w6', section:'income', icon:'🏢', name:'Corporación', desc:'+2000 monedas/seg',     baseCost:750000,  mult:2.10, type:'income', val:2000 },
+];
+
+/* ============================================================
+   ESTADO DEL JUEGO
+   ============================================================ */
+let G = {
+  money:        0,
+  totalEarned:  0,
+  clickValue:   1,
+  incomePS:     0,       // monedas por segundo
+  levels:       {},      // { upgradeId: nivel }
+  totalClicks:  0,
+};
+
+// Inicializar niveles en 0
+UPGRADES.forEach(u => { G.levels[u.id] = 0; });
+
+/* ============================================================
+   AUDIO — Web Audio API (sin archivos externos)
+   ============================================================ */
+let _ctx = null;
+function ctx() {
+  if (!_ctx) _ctx = new (window.AudioContext || window.webkitAudioContext)();
+  // Reanudar si fue suspendido (política autoplay de navegadores)
+  if (_ctx.state === 'suspended') _ctx.resume();
+  return _ctx;
+}
+
+function beep(freq, dur, vol = .15, type = 'sine') {
+  try {
+    const c = ctx();
+    const o = c.createOscillator();
+    const g = c.createGain();
+    o.connect(g); g.connect(c.destination);
+    o.type = type;
+    o.frequency.setValueAtTime(freq, c.currentTime);
+    o.frequency.exponentialRampToValueAtTime(freq * 1.4, c.currentTime + dur * .5);
+    g.gain.setValueAtTime(vol, c.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001, c.currentTime + dur);
+    o.start(c.currentTime);
+    o.stop(c.currentTime + dur);
+  } catch (_) {}
+}
+
+const sfx = {
+  click: () => beep(620, .07, .12),
+  buy:   () => {
+    beep(440, .05, .18);
+    setTimeout(() => beep(600, .05, .18), 55);
+    setTimeout(() => beep(800, .12, .18), 110);
+  },
+};
+
+/* ============================================================
+   UTILIDADES
+   ============================================================ */
+
+// Formatea números grandes: 1 234 → 1,2K → 3,4M, etc.
+function fmt(n) {
+  if (n < 1e3)  return Math.floor(n).toLocaleString('es');
+  if (n < 1e6)  return (n / 1e3).toFixed(1) + 'K';
+  if (n < 1e9)  return (n / 1e6).toFixed(2) + 'M';
+  if (n < 1e12) return (n / 1e9).toFixed(2) + 'B';
+  return (n / 1e12).toFixed(2) + 'T';
+}
+
+// Costo del siguiente nivel de una mejora
+function costOf(u) {
+  return Math.floor(u.baseCost * Math.pow(u.mult, G.levels[u.id]));
+}
+
+// Recalcula clickValue e incomePS desde los niveles actuales
+function recalc() {
+  G.clickValue = 1;
+  G.incomePS   = 0;
+  UPGRADES.forEach(u => {
+    const lv = G.levels[u.id];
+    if (!lv) return;
+    if (u.type === 'click')  G.clickValue += u.val * lv;
+    if (u.type === 'income') G.incomePS   += u.val * lv;
+  });
+}
+
+/* ============================================================
+   SISTEMA DE NIVELES
+   ============================================================ */
+let _lastLevel = 0;
+
+function currentLevel() {
+  let lv = 0;
+  for (let i = 0; i < LEVELS.length; i++) {
+    if (G.totalEarned >= LEVELS[i].t) lv = i;
+    else break;
+  }
+  return lv;
+}
+
+function levelProgress() {
+  const lv = currentLevel();
+  if (lv >= LEVELS.length - 1) return 1;
+  const lo = LEVELS[lv].t, hi = LEVELS[lv + 1].t;
+  return (G.totalEarned - lo) / (hi - lo);
+}
+
+function checkLevelUp() {
+  const lv = currentLevel();
+  if (lv > _lastLevel) {
+    showLevelToast(LEVELS[lv].n);
+    _lastLevel = lv;
+  }
+}
+
+function showLevelToast(name) {
+  const t = document.getElementById('lvToast');
+  document.getElementById('lvToastName').textContent = name;
+  t.classList.add('show');
+  beep(600, .08); setTimeout(() => beep(800, .12), 100);
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+/* ============================================================
+   GUARDAR / CARGAR / REINICIAR
+   ============================================================ */
+function save() {
+  try {
+    localStorage.setItem(CFG.saveKey, JSON.stringify({
+      money:       G.money,
+      totalEarned: G.totalEarned,
+      levels:      G.levels,
+      totalClicks: G.totalClicks,
+      ts:          Date.now(),
+    }));
+    flashSave();
+  } catch (_) {}
+}
+
+function load() {
+  try {
+    const raw = localStorage.getItem(CFG.saveKey);
+    if (!raw) return;
+    const s = JSON.parse(raw);
+    G.money       = s.money       ?? 0;
+    G.totalEarned = s.totalEarned ?? 0;
+    G.totalClicks = s.totalClicks ?? 0;
+    UPGRADES.forEach(u => {
+      if (s.levels?.[u.id] !== undefined) G.levels[u.id] = s.levels[u.id];
+    });
+    // Ingreso offline acumulado
+    if (s.ts) {
+      const offSec = Math.min((Date.now() - s.ts) / 1000, CFG.maxOfflineSec);
+      recalc();
+      if (G.incomePS > 0 && offSec > 1) {
+        const earned = G.incomePS * offSec;
+        G.money      += earned;
+        G.totalEarned += earned;
+      }
+    }
+    recalc();
+    _lastLevel = currentLevel();
+  } catch (_) {}
+}
+
+function reset() {
+  if (!confirm('¿Reiniciar todo el progreso? Esta acción no se puede deshacer.')) return;
+  localStorage.removeItem(CFG.saveKey);
+  UPGRADES.forEach(u => { G.levels[u.id] = 0; });
+  G.money = G.totalEarned = G.totalClicks = _lastLevel = 0;
+  G.clickValue = 1; G.incomePS = 0;
+  renderUI();
+}
+
+let _saveTimer;
+function flashSave() {
+  const el = document.getElementById('saveTag');
+  el.classList.add('show');
+  clearTimeout(_saveTimer);
+  _saveTimer = setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+/* ============================================================
+   CLIC EN LA MONEDA
+   ============================================================ */
+function onCoinClick(e) {
+  const earned = G.clickValue;
+  G.money       += earned;
+  G.totalEarned += earned;
+  G.totalClicks++;
+
+  sfx.click();
+  spawnFloat(e.clientX, e.clientY, `+${fmt(earned)}`);
+  animBtn();
+  checkLevelUp();
+  renderUI();
+}
+
+function animBtn() {
+  const btn = document.getElementById('coinBtn');
+  btn.classList.add('pressed');
+  setTimeout(() => btn.classList.remove('pressed'), 90);
+}
+
+function spawnFloat(cx, cy, txt) {
+  const el = document.createElement('div');
+  el.className = 'float-txt';
+  el.textContent = txt;
+  el.style.left = `${cx + (Math.random() * 36 - 18)}px`;
+  el.style.top  = `${cy - 30}px`;
+  document.body.appendChild(el);
+  el.addEventListener('animationend', () => el.remove());
+}
+
+/* ============================================================
+   COMPRAR MEJORA
+   ============================================================ */
+function buyUpgrade(id) {
+  const u = UPGRADES.find(x => x.id === id);
+  if (!u) return;
+  const cost = costOf(u);
+  if (G.money < cost) return;
+  G.money -= cost;
+  G.levels[u.id]++;
+  recalc();
+  sfx.buy();
+  checkLevelUp();
+  renderUI();
+  // Flash en la tarjeta
+  const card = document.querySelector(`[data-id="${id}"]`);
+  if (card) {
+    card.classList.add('flash');
+    setTimeout(() => card.classList.remove('flash'), 350);
+  }
+}
+
+/* ============================================================
+   INGRESO PASIVO — loop con delta-time
+   ============================================================ */
+let _lastTick = Date.now();
+
+function startIncomeLoop() {
+  setInterval(() => {
+    const now = Date.now();
+    const dt  = (now - _lastTick) / 1000;
+    _lastTick = now;
+    if (G.incomePS > 0) {
+      const earned = G.incomePS * dt;
+      G.money       += earned;
+      G.totalEarned += earned;
+    }
+    checkLevelUp();
+    renderUI();
+  }, CFG.tickMs);
+}
+
+/* ============================================================
+   RENDER — actualiza DOM
+   ============================================================ */
+function renderUI() {
+  // Estadísticas principales
+  document.getElementById('moneyDisp').textContent  = fmt(G.money);
+  document.getElementById('clickDisp').textContent  = `+${fmt(G.clickValue)}`;
+  document.getElementById('incomeDisp').textContent = `+${fmt(G.incomePS)}/s`;
+  document.getElementById('totalDisp').textContent  = fmt(G.totalEarned);
+  document.getElementById('clicksDisp').textContent = G.totalClicks.toLocaleString('es');
+
+  // Barra de nivel
+  const lv = currentLevel();
+  document.getElementById('lvName').textContent = LEVELS[lv].n;
+  document.getElementById('lvNum').textContent  = `Nivel ${lv + 1}`;
+  document.getElementById('xpBar').style.width  = `${Math.min(100, levelProgress() * 100)}%`;
+
+  // Glow en el botón si hay algo que se puede comprar
+  const anyAffordable = UPGRADES.some(u => G.money >= costOf(u));
+  document.getElementById('coinBtn').classList.toggle('glow', anyAffordable);
+
+  // Tarjetas de mejoras
+  UPGRADES.forEach(u => {
+    const card = document.querySelector(`[data-id="${u.id}"]`);
+    if (!card) return;
+    const cost    = costOf(u);
+    const canBuy  = G.money >= cost;
+    const lv2     = G.levels[u.id];
+
+    card.classList.toggle('can-buy', canBuy);
+    card.classList.toggle('locked', !canBuy);
+
+    card.querySelector('.upg-lv').textContent     = `Nv.${lv2}`;
+    const num = card.querySelector('.cost-num');
+    num.textContent = `💰 ${fmt(cost)}`;
+    num.classList.toggle('red', !canBuy);
+  });
+}
+
+/* ============================================================
+   CONSTRUCCIÓN INICIAL DEL PANEL DE MEJORAS (sólo una vez)
+   ============================================================ */
+function buildUpgradesPanel() {
+  const panel = document.getElementById('upgradesPanel');
+
+  // Separar por secciones
+  const sections = [
+    { key: 'click',  title: 'Mejoras de Clic'          },
+    { key: 'income', title: 'Generadores de Ingreso'   },
+  ];
+
+  sections.forEach(sec => {
+    const header = document.createElement('div');
+    header.className = 'section-title';
+    header.textContent = sec.title;
+    panel.appendChild(header);
+
+    UPGRADES.filter(u => u.section === sec.key).forEach(u => {
+      const card = document.createElement('div');
+      card.className = 'upg-card locked';
+      card.dataset.id = u.id;
+      card.innerHTML = `
+        <div class="upg-icon">${u.icon}</div>
+        <div class="upg-info">
+          <div class="upg-name">${u.name} <span class="upg-lv">Nv.0</span></div>
+          <div class="upg-desc">${u.desc}</div>
+        </div>
+        <div class="upg-cost">
+          <div class="cost-num red">💰 ${fmt(u.baseCost)}</div>
+          <div class="cost-lbl">costo</div>
+        </div>`;
+      card.addEventListener('click', () => buyUpgrade(u.id));
+      panel.appendChild(card);
+    });
+  });
+}
+
+/* ============================================================
+   INICIALIZACIÓN
+   ============================================================ */
+function init() {
+  load();                   // Restaurar partida guardada
+  buildUpgradesPanel();     // Crear DOM de mejoras
+  renderUI();               // Primera pintura
+
+  document.getElementById('coinBtn').addEventListener('click', onCoinClick);
+  document.getElementById('resetBtn').addEventListener('click', reset);
+
+  _lastTick = Date.now();
+  startIncomeLoop();                              // Ingreso pasivo
+  setInterval(save, CFG.saveInterval);            // Autoguardado
+
+  // Sincronizar estado de nivel inicial (por si hay guardado avanzado)
+  _lastLevel = currentLevel();
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
