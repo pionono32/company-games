@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TETRA</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id="wrap">
+
+    <!-- Left panel -->
+    <div id="panel-left">
+      <div class="p-section">
+        <div class="p-label">RESERVA</div>
+        <canvas id="hold-cvs" width="110" height="90"></canvas>
+      </div>
+      <div class="p-section">
+        <div class="p-label">CONTROLES</div>
+        <div class="ctrl-list">
+          <div><span>← →</span> Mover</div>
+          <div><span>↑ / Z</span> Rotar</div>
+          <div><span>↓</span> Bajar</div>
+          <div><span>SPC</span> Caída</div>
+          <div><span>C</span> Reservar</div>
+          <div><span>P</span> Pausa</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Board -->
+    <div id="board-wrap">
+      <canvas id="gameCanvas" width="300" height="600"></canvas>
+    </div>
+
+    <!-- Right panel -->
+    <div id="panel-right">
+      <div class="p-section">
+        <div class="p-label">SIGUIENTE</div>
+        <canvas id="next-cvs" width="110" height="270"></canvas>
+      </div>
+      <div class="p-section score-area">
+        <div class="stat"><div class="p-label">PUNTOS</div><div id="v-score">0</div></div>
+        <div class="stat"><div class="p-label">RÉCORD</div><div id="v-hi">0</div></div>
+        <div class="stat"><div class="p-label">NIVEL</div><div id="v-level">1</div></div>
+        <div class="stat"><div class="p-label">LÍNEAS</div><div id="v-lines">0</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MENU -->
+  <div id="ov-menu" class="overlay active">
+    <div class="box">
+      <div id="logo">TETRA</div>
+      <div class="sub">El clásico de todos los tiempos, reinventado.</div>
+      <button class="big-btn" id="btn-start">▶ JUGAR SOLO</button>
+      <button class="big-btn mp-btn" disabled>👥 MULTIJUGADOR <span class="soon">PRÓXIMAMENTE</span></button>
+      <div id="hi-row">RÉCORD: <span id="menu-hi">0</span></div>
+    </div>
+  </div>
+
+  <!-- PAUSE -->
+  <div id="ov-pause" class="overlay">
+    <div class="box small">
+      <div class="mid-title">PAUSA</div>
+      <button class="big-btn" id="btn-resume">▶ CONTINUAR</button>
+      <button class="big-btn ghost-btn" id="btn-quit">↩ MENÚ</button>
+    </div>
+  </div>
+
+  <!-- GAME OVER -->
+  <div id="ov-gameover" class="overlay">
+    <div class="box small">
+      <div class="go-title">GAME OVER</div>
+      <div class="go-stats">
+        <div class="stat-row">Puntuación<span id="go-score">0</span></div>
+        <div class="stat-row">Nivel alcanzado<span id="go-level">1</span></div>
+        <div class="stat-row">Líneas borradas<span id="go-lines">0</span></div>
+        <div class="stat-row">Mejor puntuación<span id="go-hi">0</span></div>
+      </div>
+      <button class="big-btn" id="btn-retry">↺ REINTENTAR</button>
+      <button class="big-btn mp-btn" disabled>👥 MULTIJUGADOR <span class="soon">PRÓXIMAMENTE</span></button>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
