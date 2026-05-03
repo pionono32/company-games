@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TRACER</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id="hud">
+    <div id="hud-left">
+      <div id="territory-label">TERRITORIO</div>
+      <div id="territory-bar-wrap"><div id="territory-bar"></div></div>
+      <div id="territory-pct">0%</div>
+    </div>
+    <div id="hud-center">
+      <div id="score-display">0</div>
+      <div id="score-label">PUNTOS</div>
+    </div>
+    <div id="hud-right">
+      <div id="lives-label">VIDAS</div>
+      <div id="lives-display"></div>
+      <div id="level-display">NIV 1</div>
+    </div>
+  </div>
+
+  <div id="power-status"></div>
+
+  <canvas id="gameCanvas"></canvas>
+
+  <!-- MENU -->
+  <div id="menu-screen" class="overlay active">
+    <div class="panel">
+      <div id="logo">TRACER</div>
+      <div class="tagline">Trazá tu camino. Conquistá el territorio.</div>
+      <div class="how-grid">
+        <div class="how-row"><span class="ic">⬛</span>Salí de tu zona y volvé para capturar área</div>
+        <div class="how-row"><span class="ic">🔴</span>Evitá que los centinelas toquen tu trazo</div>
+        <div class="how-row"><span class="ic">🎯</span>Conquistá el 70% del mapa para pasar de nivel</div>
+        <div class="how-row"><span class="ic">⚡</span>Recogé power-ups para sobrevivir más tiempo</div>
+      </div>
+      <div class="key-hint">WASD o ← ↑ → ↓ para mover</div>
+      <button id="btn-play" class="big-btn">▶ JUGAR</button>
+      <div id="hi-score-row">RECORD: <span id="hi-score">0</span></div>
+    </div>
+  </div>
+
+  <!-- GAME OVER -->
+  <div id="gameover-screen" class="overlay">
+    <div class="panel small">
+      <div class="go-title">ELIMINADO</div>
+      <div class="go-sub" id="go-reason">Un centinela destruyó tu trazo</div>
+      <div class="stats-grid">
+        <div class="stat-row">Territorio capturado<span id="go-pct">0%</span></div>
+        <div class="stat-row">Puntuación<span id="go-score">0</span></div>
+        <div class="stat-row">Nivel alcanzado<span id="go-level">1</span></div>
+        <div class="stat-row">Récord<span id="go-hi">0</span></div>
+      </div>
+      <button id="btn-retry" class="big-btn">↺ REINTENTAR</button>
+    </div>
+  </div>
+
+  <!-- LEVEL CLEAR -->
+  <div id="levelclear-screen" class="overlay">
+    <div class="panel small">
+      <div class="lc-title">¡NIVEL COMPLETO!</div>
+      <div class="lc-pct" id="lc-pct">0%</div>
+      <div class="lc-sub">del mapa conquistado</div>
+      <div class="stats-grid">
+        <div class="stat-row">Bonus de nivel<span id="lc-bonus">+0</span></div>
+        <div class="stat-row">Puntuación total<span id="lc-score">0</span></div>
+      </div>
+      <button id="btn-next" class="big-btn">NIVEL SIGUIENTE ▶</button>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
