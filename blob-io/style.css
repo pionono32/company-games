@@ -1,0 +1,209 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #1a1a2e;
+  font-family: 'Nunito', sans-serif;
+  color: #fff;
+  overflow: hidden;
+  width: 100vw; height: 100vh;
+  user-select: none;
+}
+
+#gameCanvas {
+  position: fixed;
+  top: 0; left: 0;
+  display: block;
+  cursor: none;
+}
+
+/* ── HUD ── */
+#hud-top-left {
+  position: fixed;
+  top: 14px; left: 18px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+#mass-display {
+  font-size: 22px; font-weight: 900;
+  color: #fff;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.7);
+  letter-spacing: 1px;
+}
+#rank-display {
+  font-size: 15px; font-weight: 700;
+  color: rgba(255,255,255,0.6);
+}
+
+/* ── Leaderboard ── */
+#leaderboard {
+  position: fixed;
+  top: 14px; right: 14px;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  padding: 12px 16px;
+  min-width: 160px;
+  z-index: 20;
+}
+#lb-title {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 8px;
+  text-align: center;
+}
+#lb-list {
+  list-style: none;
+  display: flex; flex-direction: column; gap: 4px;
+}
+#lb-list li {
+  font-size: 13px; font-weight: 700;
+  display: flex; justify-content: space-between; gap: 12px;
+  color: rgba(255,255,255,0.85);
+  padding: 2px 0;
+}
+#lb-list li.is-player { color: #fff; text-shadow: 0 0 8px currentColor; }
+#lb-list li span.lb-mass { color: rgba(255,255,255,0.45); font-size: 11px; font-weight: 400; }
+
+/* ── Minimap ── */
+#minimap-wrap {
+  position: fixed;
+  bottom: 14px; right: 14px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid rgba(255,255,255,0.15);
+  z-index: 20;
+}
+#minimap { display: block; }
+
+/* ── Tip bar ── */
+#tip-bar {
+  position: fixed;
+  bottom: 14px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; gap: 20px;
+  font-size: 11px;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 1px;
+  font-weight: 700;
+  z-index: 20;
+}
+
+/* ── Overlays ── */
+.overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(10, 8, 28, 0.82);
+  backdrop-filter: blur(8px);
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+.overlay.active { display: flex; }
+
+.menu-box {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 20px;
+  padding: 44px 52px;
+  text-align: center;
+  max-width: 480px; width: 92%;
+  animation: pop .28s ease;
+}
+.menu-box.small { max-width: 360px; padding: 36px 40px; }
+
+@keyframes pop {
+  from { opacity: 0; transform: scale(.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+#logo {
+  font-size: 68px; font-weight: 900;
+  letter-spacing: -2px;
+  color: #fff;
+  text-shadow: 0 0 30px rgba(255,255,255,0.3);
+  margin-bottom: 8px;
+}
+#logo span { color: #48e082; }
+
+.sub {
+  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 28px;
+  line-height: 1.6;
+}
+
+.name-row {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 16px; justify-content: center;
+}
+.name-row label { font-size: 13px; color: rgba(255,255,255,0.5); font-weight: 700; }
+#name-input {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px; font-weight: 700;
+  color: #fff;
+  outline: none;
+  width: 160px;
+  text-align: center;
+}
+#name-input:focus { border-color: #48e082; }
+
+.color-row {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 28px; justify-content: center;
+}
+.color-row label { font-size: 13px; color: rgba(255,255,255,0.5); font-weight: 700; }
+#color-picks { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.color-pick {
+  width: 28px; height: 28px; border-radius: 50%;
+  cursor: pointer; border: 3px solid transparent;
+  transition: transform .15s, border-color .15s;
+}
+.color-pick:hover  { transform: scale(1.15); }
+.color-pick.active { border-color: #fff; transform: scale(1.2); }
+
+.play-btn {
+  font-family: 'Nunito', sans-serif;
+  font-size: 16px; font-weight: 900;
+  letter-spacing: 2px;
+  padding: 14px 0; width: 100%;
+  border: none; border-radius: 12px;
+  background: linear-gradient(135deg, #1db85b, #48e082);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(72,224,130,0.35);
+  transition: transform .12s, box-shadow .2s;
+  margin-bottom: 24px;
+}
+.play-btn:hover  { transform: scale(1.03); box-shadow: 0 6px 28px rgba(72,224,130,0.55); }
+.play-btn:active { transform: scale(.97); }
+
+.how-to {
+  display: flex; flex-direction: column; gap: 6px;
+  font-size: 12px; color: rgba(255,255,255,0.4);
+  text-align: left; line-height: 1.5;
+}
+
+/* ── Game Over ── */
+h2 { font-size: 32px; font-weight: 900; letter-spacing: 2px; margin-bottom: 6px; color: #ff4466; }
+#go-by { font-size: 14px; color: rgba(255,255,255,0.5); margin-bottom: 22px; }
+#go-killer { color: #fff; font-weight: 700; }
+.go-stats {
+  display: flex; flex-direction: column; gap: 8px;
+  margin-bottom: 24px;
+}
+.go-stats div {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 13px; color: rgba(255,255,255,0.55);
+  padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.go-stats span { font-size: 16px; font-weight: 700; color: #fff; }

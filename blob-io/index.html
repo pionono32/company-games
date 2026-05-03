@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BLOB.IO</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- HUD overlays -->
+  <div id="hud-top-left">
+    <div id="mass-display">MASA: 0</div>
+    <div id="rank-display">#1</div>
+  </div>
+
+  <div id="leaderboard">
+    <div id="lb-title">🏆 TOP 10</div>
+    <ol id="lb-list"></ol>
+  </div>
+
+  <div id="minimap-wrap">
+    <canvas id="minimap"></canvas>
+  </div>
+
+  <div id="tip-bar">
+    <span>ESPACIO: dividirse</span>
+    <span>W: expulsar masa</span>
+    <span>Mouse: mover</span>
+  </div>
+
+  <canvas id="gameCanvas"></canvas>
+
+  <!-- MENU -->
+  <div id="menu-screen" class="overlay active">
+    <div class="menu-box">
+      <h1 id="logo">BLOB<span>.IO</span></h1>
+      <p class="sub">Comé, crecé, dominá. Evitá a los más grandes.</p>
+      <div class="name-row">
+        <label>Tu nombre:</label>
+        <input id="name-input" type="text" maxlength="14" placeholder="Jugador" spellcheck="false">
+      </div>
+      <div class="color-row">
+        <label>Color:</label>
+        <div id="color-picks"></div>
+      </div>
+      <button id="btn-play" class="play-btn">▶ JUGAR</button>
+      <div class="how-to">
+        <div>🟢 Comé puntos de comida para crecer</div>
+        <div>💀 Comé blobs más chicos que vos</div>
+        <div>🟡 Esquivá a los más grandes</div>
+        <div>🦠 Los virus te dividen si sos grande</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GAME OVER -->
+  <div id="gameover-screen" class="overlay">
+    <div class="menu-box small">
+      <h2 id="go-title">ABSORBIDO</h2>
+      <div id="go-by">por <span id="go-killer"></span></div>
+      <div class="go-stats">
+        <div>Masa máxima<span id="go-mass"></span></div>
+        <div>Tiempo vivido<span id="go-time"></span></div>
+        <div>Blobs comidos<span id="go-eaten"></span></div>
+        <div>Mejor puesto<span id="go-rank"></span></div>
+      </div>
+      <button id="btn-respawn" class="play-btn">↺ REVIVIR</button>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
