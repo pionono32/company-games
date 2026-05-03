@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VOID SWARM</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id="hud">
+    <div id="hud-left">
+      <span id="timer-display">00:00</span>
+      <span id="kill-display">💀 0</span>
+    </div>
+    <div id="hud-center">
+      <div id="xp-wrap">
+        <div id="xp-fill"></div>
+        <span id="level-display">Nv.1</span>
+      </div>
+    </div>
+    <div id="hud-right">
+      <span id="score-display">0 pts</span>
+    </div>
+  </div>
+
+  <div id="hp-bar-row">
+    <span class="hp-heart">♥</span>
+    <div id="hp-track"><div id="hp-fill"></div></div>
+    <span id="hp-text">100</span>
+  </div>
+
+  <canvas id="gameCanvas"></canvas>
+
+  <!-- MENU -->
+  <div id="menu-screen" class="overlay active">
+    <div class="overlay-box">
+      <h1 class="title"><span class="c-green">VOID</span><br><span class="c-purple">SWARM</span></h1>
+      <p class="subtitle">Sobreviví el mayor tiempo posible.<br>Matá enemigos → subí de nivel → elegí mejoras.<br>Las hordas nunca paran.</p>
+      <div class="key-grid">
+        <span class="key">WASD / ↑↓←→</span><span>Mover</span>
+        <span class="key">Auto</span><span>Disparo</span>
+        <span class="key">P / ESC</span><span>Pausa</span>
+      </div>
+      <button id="btn-start" class="btn btn-green">▶ JUGAR</button>
+    </div>
+  </div>
+
+  <!-- LEVEL UP -->
+  <div id="levelup-screen" class="overlay">
+    <div class="overlay-box wide">
+      <h2 class="c-yellow">¡NIVEL <span id="new-level-num">2</span>!</h2>
+      <p class="subtitle">Elegí una mejora:</p>
+      <div id="upgrade-cards"></div>
+    </div>
+  </div>
+
+  <!-- GAME OVER -->
+  <div id="gameover-screen" class="overlay">
+    <div class="overlay-box">
+      <h2 class="c-red">CAÍSTE</h2>
+      <div class="stat-grid">
+        <span>Tiempo</span><span id="go-time" class="c-green"></span>
+        <span>Nivel</span><span id="go-level" class="c-yellow"></span>
+        <span>Kills</span><span id="go-kills" class="c-purple"></span>
+        <span>Puntaje</span><span id="go-score" class="c-green"></span>
+        <span>Récord</span><span id="go-record" class="c-yellow"></span>
+      </div>
+      <button id="btn-restart" class="btn btn-green">↺ REINTENTAR</button>
+    </div>
+  </div>
+
+  <!-- PAUSE -->
+  <div id="pause-screen" class="overlay">
+    <div class="overlay-box small">
+      <h2 class="c-green">PAUSA</h2>
+      <button id="btn-resume" class="btn btn-green">▶ CONTINUAR</button>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
