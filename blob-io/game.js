@@ -304,7 +304,7 @@ function ejectMass() {
     ejected.vx = (dx/d) * 380; ejected.vy = (dy/d) * 380;
     ejected.isEjected = true;
     cells.push(ejected);
-    food.push({ x: ejected.x, y: ejected.y, r: 14, color: piece.color, alpha: 0.85, isEjected: true });
+    // Don't add to food[] — the ejected blob itself is the pellet
   }
 }
 
@@ -402,7 +402,7 @@ function eatFood() {
 function eatCells(dt) {
   for (let i = cells.length - 1; i >= 0; i--) {
     const eater = cells[i];
-    if (!eater.alive) continue;
+    if (!eater.alive || eater.isEjected) continue; // ejected blobs don't eat
     for (let j = cells.length - 1; j >= 0; j--) {
       if (i === j) continue;
       const prey = cells[j];
@@ -437,8 +437,11 @@ function eatCells(dt) {
 }
 
 function checkViruses() {
+  // Snapshot cells before iterating — virusSplit pushes to cells and would
+  // cause newly created pieces to be split again in the same frame.
+  const snapshot = [...cells];
   for (const v of viruses) {
-    for (const b of cells) {
+    for (const b of snapshot) {
       if (!b.alive || b.r < v.r * 0.95) continue;
       const d2 = dist2(b.x, b.y, v.x, v.y);
       if (d2 < (b.r + v.r * 0.5) ** 2) {
@@ -457,7 +460,9 @@ function virusSplit(b) {
   for (let i = 1; i < pieces; i++) {
     const a = rand(0, Math.PI*2);
     const spd = rand(180, 320);
-    const nb = new Blob(b.x, b.y, massPer, b.color, b.name, b.isPlayer, b.botRef);
+    // Split pieces don't inherit botRef — only the original blob keeps it,
+    // preventing each piece from triggering a separate respawn when eaten.
+    const nb = new Blob(b.x, b.y, massPer, b.color, b.name, b.isPlayer, null);
     nb.vx = Math.cos(a)*spd; nb.vy = Math.sin(a)*spd;
     nb.mergeTimer = 12;
     b.mergeTimer  = 12;
@@ -539,6 +544,8 @@ function startGame() {
 
 function respawnBot(bot) {
   if (gameState !== 'playing') return;
+  // Safety cap: if too many cells exist, skip respawn to prevent runaway growth
+  if (cells.filter(c => c.alive).length > 120) return;
   const color  = bot.color;
   const botMass = radiusToMass(rand(22, 40));
   const bBlob  = new Blob(rand(100, WW-100), rand(100, WH-100), botMass, color, bot.name, false, bot);
